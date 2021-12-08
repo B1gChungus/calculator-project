@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        #holder {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #calculator {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+            width: 43vmin;
+            height: 72vmin;
+            background-color: rgb(70, 70, 70);
+            color: white;
+            gap: 1%;
+            padding: 5px 5px 5px 5px;
+        }
+
+        .calcbutton {
+            background-color: rgb(55, 55, 55);
+            text-align: center;
+            display: flex;
+            width: 24%;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-size: 20px;
+            user-select: none;
+        }
+
+        .calcbutton:hover {
+            background-color: rgb(60, 60, 60);
+        }
+
+        .calcbutton:active {
+            background-color: rgb(65, 65, 65);
+        }
+
+        #output {
+            order: 0;
+            width: 96%;
+            height: 25%;
+            font-size: 45px;
+            justify-content: flex-end;
+            align-items: flex-end;
+            padding: 5px 5px 5px 5px;
+            margin: 0;
+            background-color: rgb(55, 55, 55);
+            text-align: center;
+            display: flex;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="holder">
+        <div id="calculator">
+            <p id="output"></p>
+            <p class="calcbutton" onClick="addsymbol('%')">%</p>
+            <p class="calcbutton" onClick="clearequation()">CE</p>
+            <p class="calcbutton" onClick="clearequation()">C</p>
+            <p class="calcbutton" onClick="removesymbols('1')">DEL</p>
+            <p class="calcbutton" onClick="addsymbol('1/x')">1/x</p>
+            <p class="calcbutton" onClick="addsymbol('x**2')">x<sup>2</sup></p>
+            <p class="calcbutton" onClick="addsymbol('Math.sqrt(x)')">√(x)</p>
+            <p class="calcbutton" onClick="addsymbol('/')">÷</p>
+            <p class="calcbutton" onClick="addsymbol('7')">7</p>
+            <p class="calcbutton" onClick="addsymbol('8')">8</p>
+            <p class="calcbutton" onClick="addsymbol('9')">9</p>
+            <p class="calcbutton" onClick="addsymbol('*')">x</p>
+            <p class="calcbutton" onClick="addsymbol('4')">4</p>
+            <p class="calcbutton" onClick="addsymbol('5')">5</p>
+            <p class="calcbutton" onClick="addsymbol('6')">6</p>
+            <p class="calcbutton" onClick="addsymbol('-')">-</p>
+            <p class="calcbutton" onClick="addsymbol('1')">1</p>
+            <p class="calcbutton" onClick="addsymbol('2')">2</p>
+            <p class="calcbutton" onClick="addsymbol('3')">3</p>
+            <p class="calcbutton" onClick="addsymbol('+')">+</p>
+            <p class="calcbutton" onClick="swapvalue()">+/-</p>
+            <p class="calcbutton" onClick="addsymbol('0')">0</p>
+            <p class="calcbutton" onClick="addsymbol('.')">.</p>
+            <p class="calcbutton" onClick="calcequation()">=</p>
+        </div>
+    </div>
+
+    <script>
+        var pastequations = []
+        var equation = ""
+        var previoussymbol = ""
+        var output = document.getElementById("output")
+
+        function clearall() {
+
+        }
+        function clearequation() {
+            equation = ""
+            previoussymbol = ""
+            output.innerHTML = ""
+        }
+        function calcequation() {
+            var answer = eval(equation)
+            equation = String(answer)
+            previoussymbol = String(answer)
+            output.innerHTML = answer
+        }
+        function swapvalue() {
+            newsymbol = `${Number(previoussymbol) * -1}`
+            equation = equation.replace(previoussymbol, newsymbol)
+            previoussymbol = newsymbol
+            output.innerHTML = equation
+        }
+        function removesymbols() {
+            equation = equation.replace(previoussymbol, "")
+            previoussymbol = ""
+            output.innerHTML = equation
+        }
+        function addsymbol(symbol) {
+            console.log(previoussymbol)
+            if (symbol.indexOf("x") !== -1) { // if you need to make a symbol have an equation
+                var s = symbol
+                while (s.indexOf("x") !== -1) {
+                    s = s.replace("x", previoussymbol)
+                }
+                equation = equation.replace(previoussymbol, s)
+                previoussymbol = s
+
+            } else if ((symbol.indexOf("*") !== -1 || symbol.indexOf("/") !== -1 || symbol.indexOf("-") !== -1 || symbol.indexOf("+") !== -1)) {
+                equation += symbol
+                previoussymbol = ""
+            } else {
+                equation += symbol
+                previoussymbol += symbol
+            }
+            output.innerHTML = equation
+        }
+
+        var inputs = {
+            ["1"]: addsymbol,
+            ["2"]: addsymbol,
+            ["3"]: addsymbol,
+            ["4"]: addsymbol,
+            ["5"]: addsymbol,
+            ["6"]: addsymbol,
+            ["7"]: addsymbol,
+            ["8"]: addsymbol,
+            ["9"]: addsymbol,
+            ["0"]: addsymbol,
+            ["-"]: addsymbol,
+            ["+"]: addsymbol,
+            ["/"]: addsymbol,
+            ["*"]: addsymbol,
+            [`(`]: addsymbol,
+            [`)`]: addsymbol,
+            ["%"]: addsymbol,
+            ["Backspace"]: removesymbols,
+            ["Enter"]: calcequation,
+        }
+        document.addEventListener('keydown', function (key) {
+            if (inputs[key.key] !== undefined) {
+                inputs[key.key](`${key.key}`)
+            }
+        });
+    </script>
+</body>
+
+</html>
